@@ -1,0 +1,1006 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Una cita con usted</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Figtree:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg1: #120a2a;
+        --bg2: #1d1650;
+        --bg3: #2a1a5e;
+        --card: rgba(255, 255, 255, 0.06);
+        --card-b: rgba(255, 255, 255, 0.14);
+        --gold: #e6c27a;
+        --gold-d: #b8924a;
+        --rose: #f2a7c3;
+        --text: #f5efff;
+        --muted: #b9aedb;
+        --serif: "Fraunces", Georgia, serif;
+        --sans: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        min-height: 100%;
+      }
+      body {
+        font-family: var(--sans);
+        color: var(--text);
+        line-height: 1.5;
+        background:
+          radial-gradient(ellipse at 20% 0%, var(--bg3) 0%, transparent 55%),
+          radial-gradient(ellipse at 90% 100%, #3b1d5a 0%, transparent 50%),
+          linear-gradient(160deg, var(--bg1), var(--bg2));
+        background-attachment: fixed;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px 16px;
+        overflow-x: hidden;
+      }
+      .stars {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+      }
+      .stars i {
+        position: absolute;
+        width: 3px;
+        height: 3px;
+        border-radius: 50%;
+        background: var(--gold);
+        opacity: 0.5;
+        animation: tw 4s ease-in-out infinite;
+      }
+      @keyframes tw {
+        0%,
+        100% {
+          opacity: 0.15;
+        }
+        50% {
+          opacity: 0.7;
+        }
+      }
+      main {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        max-width: 560px;
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--card-b);
+        border-radius: 28px;
+        padding: 34px 28px 28px;
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        box-shadow: 0 30px 80px rgba(8, 3, 28, 0.55);
+      }
+      .brand {
+        text-align: center;
+        font-family: var(--serif);
+        font-style: italic;
+        color: var(--rose);
+        font-size: 1rem;
+        margin-bottom: 6px;
+      }
+      .progress {
+        display: flex;
+        gap: 8px;
+        margin: 0 auto 26px;
+        max-width: 260px;
+      }
+      .progress span {
+        flex: 1;
+        height: 4px;
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.14);
+        transition: background 0.4s;
+      }
+      .progress span.on {
+        background: linear-gradient(90deg, var(--gold), var(--rose));
+      }
+      .step {
+        display: none;
+      }
+      .step.active {
+        display: block;
+        animation: in 0.55s cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+      .step.back.active {
+        animation-name: inBack;
+      }
+      @keyframes in {
+        from {
+          opacity: 0;
+          transform: translateX(40px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      @keyframes inBack {
+        from {
+          opacity: 0;
+          transform: translateX(-40px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      h1,
+      h2 {
+        font-family: var(--serif);
+        font-weight: 600;
+        text-align: center;
+        letter-spacing: -0.01em;
+      }
+      h1 {
+        font-size: clamp(1.9rem, 6vw, 2.5rem);
+        margin-bottom: 6px;
+      }
+      .sub {
+        text-align: center;
+        color: var(--muted);
+        margin-bottom: 24px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+      .opt {
+        font: inherit;
+        color: var(--text);
+        cursor: pointer;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--card-b);
+        border-radius: 18px;
+        padding: 18px 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        transition:
+          transform 0.2s,
+          border-color 0.2s,
+          background 0.2s,
+          box-shadow 0.2s;
+      }
+      .opt .e {
+        font-size: 1.7rem;
+      }
+      .opt:hover {
+        transform: translateY(-3px);
+        border-color: var(--gold);
+      }
+      .opt[aria-pressed="true"] {
+        border-color: var(--gold);
+        background: rgba(230, 194, 122, 0.16);
+        box-shadow: 0 0 0 3px rgba(230, 194, 122, 0.22);
+      }
+      :focus-visible {
+        outline: 3px solid var(--rose);
+        outline-offset: 3px;
+      }
+      .other {
+        margin-top: 14px;
+        display: none;
+      }
+      .other.show {
+        display: block;
+        animation: in 0.4s;
+      }
+      input[type="text"],
+      input[type="date"] {
+        width: 100%;
+        font: inherit;
+        color: var(--text);
+        background: rgba(10, 5, 32, 0.55);
+        border: 1px solid var(--card-b);
+        border-radius: 14px;
+        padding: 14px 16px;
+        color-scheme: dark;
+      }
+      input::placeholder {
+        color: #8e82b8;
+      }
+      input:focus {
+        border-color: var(--gold);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(230, 194, 122, 0.25);
+      }
+      label.l {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+      .link {
+        display: block;
+        margin: 18px auto 0;
+        background: none;
+        border: none;
+        color: var(--rose);
+        font: inherit;
+        font-style: italic;
+        cursor: pointer;
+        text-decoration: underline;
+        text-underline-offset: 4px;
+      }
+      .btn {
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        border-radius: 999px;
+        padding: 14px 28px;
+        color: #2a1a05;
+        background: linear-gradient(135deg, var(--gold), #f4dca4);
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s,
+          opacity 0.2s;
+        box-shadow: 0 8px 24px rgba(230, 194, 122, 0.28);
+      }
+      .btn:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 30px rgba(230, 194, 122, 0.4);
+      }
+      .btn:disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
+        box-shadow: none;
+      }
+      .btn.big {
+        width: 100%;
+        padding: 18px;
+        font-size: 1.2rem;
+        margin-top: 22px;
+        background: linear-gradient(135deg, var(--rose), var(--gold));
+      }
+      .ghost {
+        background: none;
+        border: none;
+        color: var(--muted);
+        font: inherit;
+        cursor: pointer;
+        padding: 10px;
+      }
+      .ghost:hover {
+        color: var(--text);
+      }
+      .nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 24px;
+      }
+      .nav.end {
+        justify-content: flex-end;
+      }
+      .times {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+      .times .opt {
+        padding: 16px 8px;
+        font-weight: 600;
+        font-size: 1.05rem;
+      }
+      .sum {
+        list-style: none;
+        border: 1px solid var(--card-b);
+        border-radius: 18px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.04);
+      }
+      .sum li {
+        display: flex;
+        gap: 14px;
+        align-items: baseline;
+        padding: 16px 18px;
+        border-bottom: 1px solid var(--card-b);
+      }
+      .sum li:last-child {
+        border-bottom: none;
+      }
+      .sum small {
+        color: var(--muted);
+        min-width: 78px;
+      }
+      .sum b {
+        font-family: var(--serif);
+        font-weight: 600;
+        font-size: 1.15rem;
+        text-transform: capitalize;
+      }
+      /* Overlays */
+      .overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 20;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        background: rgba(10, 5, 30, 0.88);
+        backdrop-filter: blur(6px);
+      }
+      .overlay.show {
+        display: flex;
+        animation: fade 0.3s;
+      }
+      @keyframes fade {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      .modal {
+        text-align: center;
+        max-width: 380px;
+        width: 100%;
+      }
+      .wheel-wrap {
+        position: relative;
+        width: min(78vw, 320px);
+        aspect-ratio: 1;
+        margin: 18px auto;
+      }
+      #wheel {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        box-shadow:
+          0 0 0 6px var(--gold-d),
+          0 0 40px rgba(230, 194, 122, 0.35);
+        transition: transform 4.2s cubic-bezier(0.12, 0.7, 0.1, 1);
+      }
+      .pointer {
+        position: absolute;
+        top: -14px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-left: 14px solid transparent;
+        border-right: 14px solid transparent;
+        border-top: 28px solid var(--rose);
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+        z-index: 2;
+      }
+      .hub {
+        position: absolute;
+        inset: 50% auto auto 50%;
+        width: 46px;
+        height: 46px;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        background: var(--bg1);
+        border: 3px solid var(--gold);
+        z-index: 2;
+      }
+      .res {
+        min-height: 2.2em;
+        font-family: var(--serif);
+        font-size: 1.4rem;
+        color: var(--gold);
+        margin: 6px 0 12px;
+      }
+      .spinner {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 22px;
+        border-radius: 50%;
+        border: 5px solid rgba(255, 255, 255, 0.15);
+        border-top-color: var(--gold);
+        border-right-color: var(--rose);
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      /* Final */
+      #final {
+        display: none;
+        text-align: center;
+        position: relative;
+        z-index: 2;
+      }
+      #final.show {
+        display: block;
+        animation: in 0.8s;
+      }
+      #final h2 {
+        font-size: clamp(1.8rem, 6vw, 2.4rem);
+        margin: 18px 0 8px;
+      }
+      .dog {
+        width: min(70vw, 260px);
+        aspect-ratio: 1;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 4px solid var(--gold);
+        box-shadow:
+          0 0 0 8px rgba(242, 167, 195, 0.2),
+          0 20px 50px rgba(0, 0, 0, 0.5);
+        background: var(--bg2);
+      }
+      .dogfb {
+        display: none;
+        font-size: 6rem;
+        line-height: 1;
+      }
+      .wait {
+        display: inline-block;
+        margin-top: 16px;
+        padding: 12px 24px;
+        border-radius: 999px;
+        border: 1px solid var(--gold);
+        color: var(--gold);
+        font-family: var(--serif);
+        font-style: italic;
+        font-size: 1.15rem;
+      }
+      .hidden {
+        display: none !important;
+      }
+      @media (max-width: 420px) {
+        .card {
+          padding: 28px 18px 22px;
+          border-radius: 22px;
+        }
+        .grid,
+        .times {
+          gap: 10px;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation-duration: 0.01ms !important;
+          transition-duration: 0.01ms !important;
+        }
+        #wheel {
+          transition-duration: 1.2s !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="stars" id="stars" aria-hidden="true"></div>
+
+    <main>
+      <div class="card" id="card">
+        <p class="brand">Una invitación especial para usted</p>
+        <div class="progress" id="progress" aria-hidden="true">
+          <span class="on"></span><span></span><span></span><span></span>
+        </div>
+
+        <form id="wizard" novalidate>
+          <!-- Paso 1 -->
+          <section class="step active" data-step="1" aria-labelledby="t1">
+            <h1 id="t1">¿Qué haremos?</h1>
+            <p class="sub">Elija la actividad que más le guste.</p>
+            <div
+              class="grid"
+              id="activities"
+              role="group"
+              aria-label="Actividades"
+            >
+              <button
+                type="button"
+                class="opt"
+                data-v="Museo"
+                aria-pressed="false"
+              >
+                <span class="e">🏛️</span>Museo
+              </button>
+              <button
+                type="button"
+                class="opt"
+                data-v="Picnic"
+                aria-pressed="false"
+              >
+                <span class="e">🧺</span>Picnic
+              </button>
+              <button
+                type="button"
+                class="opt"
+                data-v="Cine"
+                aria-pressed="false"
+              >
+                <span class="e">🎬</span>Cine
+              </button>
+              <button
+                type="button"
+                class="opt"
+                data-v="Restaurante"
+                aria-pressed="false"
+              >
+                <span class="e">🍷</span>Restaurante
+              </button>
+              <button
+                type="button"
+                class="opt"
+                data-v="Cita juegos"
+                aria-pressed="false"
+              >
+                <span class="e">🎲</span>Cita juegos
+              </button>
+              <button
+                type="button"
+                class="opt"
+                data-v="Otro"
+                aria-pressed="false"
+              >
+                <span class="e">✨</span>Otro
+              </button>
+            </div>
+            <div class="other" id="otherBox">
+              <label class="l" for="otherInput"
+                >Escriba su propia propuesta</label
+              >
+              <input
+                type="text"
+                id="otherInput"
+                maxlength="120"
+                placeholder="Por ejemplo: caminata al atardecer"
+                autocomplete="off"
+              />
+            </div>
+            <button type="button" class="link" id="spinBtn">
+              ¿No sabe?, ¡que decida la suerte!
+            </button>
+            <div class="nav end">
+              <button type="button" class="btn" id="next1" disabled>
+                Continuar
+              </button>
+            </div>
+          </section>
+
+          <!-- Paso 2 -->
+          <section class="step" data-step="2" aria-labelledby="t2">
+            <h1 id="t2">¿Qué día?</h1>
+            <p class="sub">Elija una fecha a partir de hoy.</p>
+            <label class="l" for="date">Fecha</label>
+            <input type="date" id="date" required />
+            <div class="nav">
+              <button type="button" class="ghost" data-back>← Volver</button>
+              <button type="button" class="btn" id="next2" disabled>
+                Continuar
+              </button>
+            </div>
+          </section>
+
+          <!-- Paso 3 -->
+          <section class="step" data-step="3" aria-labelledby="t3">
+            <h1 id="t3">¿A qué hora?</h1>
+            <p class="sub">Toque un horario para continuar.</p>
+            <div class="times" id="times" role="group" aria-label="Horarios">
+              <button
+                type="button"
+                class="opt"
+                data-v="11:00 AM"
+                aria-pressed="false"
+              >
+                11:00 AM
+              </button>
+              <button
+                type="button"
+                class="opt"
+                data-v="12:00 PM"
+                aria-pressed="false"
+              >
+                12:00 PM
+              </button>
+              <button
+                type="button"
+                class="opt"
+                data-v="1:00 PM"
+                aria-pressed="false"
+              >
+                1:00 PM
+              </button>
+              <button
+                type="button"
+                class="opt"
+                data-v="2:00 PM"
+                aria-pressed="false"
+              >
+                2:00 PM
+              </button>
+              <button
+                type="button"
+                class="opt"
+                data-v="3:00 PM"
+                aria-pressed="false"
+              >
+                3:00 PM
+              </button>
+              <button
+                type="button"
+                class="opt"
+                data-v="4:00 PM"
+                aria-pressed="false"
+              >
+                4:00 PM
+              </button>
+            </div>
+            <div class="nav">
+              <button type="button" class="ghost" data-back>← Volver</button>
+            </div>
+          </section>
+
+          <!-- Paso 4 -->
+          <section class="step" data-step="4" aria-labelledby="t4">
+            <h1 id="t4">¿Todo en orden?</h1>
+            <p class="sub">Revise su elección antes de confirmar.</p>
+            <ul class="sum" aria-live="polite">
+              <li><small>Actividad</small><b id="sAct"></b></li>
+              <li><small>Fecha</small><b id="sDate"></b></li>
+              <li><small>Hora</small><b id="sTime"></b></li>
+            </ul>
+            <button type="submit" class="btn big" id="confirmBtn">
+              Confirmar
+            </button>
+            <div class="nav">
+              <button type="button" class="ghost" data-back>← Volver</button>
+            </div>
+          </section>
+        </form>
+
+        <!-- Pantalla final -->
+        <div id="final" aria-live="polite">
+          <img
+            class="dog"
+            src="./perrito.png"
+            alt="Un perrito feliz"
+            id="dogImg"
+          />
+          <div
+            class="dogfb"
+            id="dogFb"
+            role="img"
+            aria-label="Un perrito feliz"
+          >
+            🐶
+          </div>
+          <h2>¡Gracias por aceptar! Nos vemos pronto.</h2>
+          <p class="wait">Espere confirmación</p>
+        </div>
+      </div>
+    </main>
+
+    <!-- Ruleta -->
+    <div
+      class="overlay"
+      id="wheelOv"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="wTitle"
+    >
+      <div class="modal">
+        <h2 id="wTitle">Que decida el destino</h2>
+        <div class="wheel-wrap">
+          <div class="pointer"></div>
+          <div class="hub"></div>
+          <canvas
+            id="wheel"
+            width="640"
+            height="640"
+            aria-hidden="true"
+          ></canvas>
+        </div>
+        <p class="res" id="wheelRes" aria-live="assertive"></p>
+        <button type="button" class="btn" id="goSpin">Girar la ruleta</button>
+        <button type="button" class="ghost" id="closeWheel">Cancelar</button>
+      </div>
+    </div>
+
+    <!-- Spinner -->
+    <div class="overlay" id="loadOv" role="alert" aria-live="assertive">
+      <div class="modal">
+        <div class="spinner"></div>
+        <p>Enviando respuestas al servidor...</p>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <script>
+      (() => {
+        const $ = (s, r = document) => r.querySelector(s);
+        const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+        const state = { activity: "", date: "", time: "" };
+        let current = 1;
+
+        // Estrellas decorativas
+        const stars = $("#stars");
+        for (let i = 0; i < 40; i++) {
+          const s = document.createElement("i");
+          s.style.cssText = `left:${Math.random() * 100}%;top:${Math.random() * 100}%;animation-delay:${Math.random() * 4}s;transform:scale(${0.5 + Math.random()})`;
+          stars.appendChild(s);
+        }
+
+        // Navegación del asistente
+        function go(n, back = false) {
+          current = n;
+          $$(".step").forEach((s) => {
+            s.classList.remove("active", "back");
+            if (+s.dataset.step === n) {
+              s.classList.add("active");
+              if (back) s.classList.add("back");
+            }
+          });
+          $$("#progress span").forEach((p, i) =>
+            p.classList.toggle("on", i < n),
+          );
+          if (n === 4) {
+            $("#sAct").textContent = state.activity;
+            $("#sDate").textContent = fmtDate(state.date);
+            $("#sTime").textContent = state.time;
+          }
+          const h = $(`.step[data-step="${n}"] h1`);
+          h.setAttribute("tabindex", "-1");
+          h.focus({ preventScroll: true });
+        }
+        $$("[data-back]").forEach((b) =>
+          b.addEventListener("click", () => go(current - 1, true)),
+        );
+
+        function fmtDate(iso) {
+          if (!iso) return "";
+          const [y, m, d] = iso.split("-").map(Number);
+          return new Date(y, m - 1, d).toLocaleDateString("es-MX", {
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          });
+        }
+
+        // Paso 1
+        const otherBox = $("#otherBox"),
+          otherInput = $("#otherInput"),
+          next1 = $("#next1");
+        let chosen = "";
+        function selectActivity(v) {
+          chosen = v;
+          $$("#activities .opt").forEach((b) =>
+            b.setAttribute("aria-pressed", String(b.dataset.v === v)),
+          );
+          otherBox.classList.toggle("show", v === "Otro");
+          if (v === "Otro") otherInput.focus();
+          updateStep1();
+        }
+        function updateStep1() {
+          const ok =
+            chosen && (chosen !== "Otro" || otherInput.value.trim().length > 0);
+          next1.disabled = !ok;
+        }
+        $$("#activities .opt").forEach((b) =>
+          b.addEventListener("click", () => selectActivity(b.dataset.v)),
+        );
+        otherInput.addEventListener("input", updateStep1);
+        otherInput.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            if (!next1.disabled) next1.click();
+          }
+        });
+        next1.addEventListener("click", () => {
+          state.activity = chosen === "Otro" ? otherInput.value.trim() : chosen;
+          go(2);
+        });
+
+        // Ruleta
+        const opts = ["Museo", "Picnic", "Cine", "Restaurante", "Cita juegos"];
+        const colors = ["#4a2a8a", "#7a2f7a", "#2f3f9a", "#8a3a6a", "#3a2f7a"];
+        const canvas = $("#wheel"),
+          ctx = canvas.getContext("2d");
+        const seg = 360 / opts.length;
+        (function draw() {
+          const c = canvas.width / 2,
+            r = c - 6;
+          opts.forEach((o, i) => {
+            const a0 = ((i * seg - 90) * Math.PI) / 180,
+              a1 = (((i + 1) * seg - 90) * Math.PI) / 180;
+            ctx.beginPath();
+            ctx.moveTo(c, c);
+            ctx.arc(c, c, r, a0, a1);
+            ctx.closePath();
+            ctx.fillStyle = colors[i];
+            ctx.fill();
+            ctx.strokeStyle = "rgba(230,194,122,.7)";
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            ctx.save();
+            ctx.translate(c, c);
+            ctx.rotate((a0 + a1) / 2);
+            ctx.textAlign = "right";
+            ctx.fillStyle = "#f5efff";
+            ctx.font = "600 38px Figtree, system-ui, sans-serif";
+            ctx.fillText(o, r - 30, 13);
+            ctx.restore();
+          });
+        })();
+
+        const wheelOv = $("#wheelOv"),
+          goSpin = $("#goSpin"),
+          wheelRes = $("#wheelRes"),
+          closeWheel = $("#closeWheel");
+        let rot = 0,
+          spinning = false,
+          opener = null;
+        function openWheel() {
+          opener = document.activeElement;
+          wheelRes.textContent = "";
+          goSpin.disabled = false;
+          goSpin.textContent = "Girar la ruleta";
+          wheelOv.classList.add("show");
+          goSpin.focus();
+        }
+        function hideWheel() {
+          wheelOv.classList.remove("show");
+          if (opener) opener.focus();
+        }
+        $("#spinBtn").addEventListener("click", openWheel);
+        closeWheel.addEventListener("click", () => {
+          if (!spinning) hideWheel();
+        });
+        document.addEventListener("keydown", (e) => {
+          if (
+            e.key === "Escape" &&
+            wheelOv.classList.contains("show") &&
+            !spinning
+          )
+            hideWheel();
+        });
+
+        goSpin.addEventListener("click", () => {
+          if (spinning) return;
+          spinning = true;
+          goSpin.disabled = true;
+          closeWheel.disabled = true;
+          wheelRes.textContent = "";
+          const idx = Math.floor(Math.random() * opts.length);
+          const a = (idx + 0.15 + Math.random() * 0.7) * seg; // ángulo dentro del segmento ganador
+          const delta = (360 - a - (rot % 360) + 360) % 360;
+          rot += (5 + Math.floor(Math.random() * 3)) * 360 + delta;
+          canvas.style.transform = `rotate(${rot}deg)`;
+          const done = () => {
+            canvas.removeEventListener("transitionend", done);
+            spinning = false;
+            closeWheel.disabled = false;
+            const win = opts[Math.floor(((360 - (rot % 360)) % 360) / seg)];
+            wheelRes.textContent = `¡${win}!`;
+            selectActivity(win);
+            setTimeout(() => {
+              hideWheel();
+              next1.click();
+            }, 1400);
+          };
+          canvas.addEventListener("transitionend", done);
+        });
+
+        // Paso 2
+        const dateInput = $("#date"),
+          next2 = $("#next2");
+        const now = new Date();
+        const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+        dateInput.min = today;
+        dateInput.addEventListener("input", () => {
+          next2.disabled = !(dateInput.value && dateInput.value >= today);
+        });
+        next2.addEventListener("click", () => {
+          state.date = dateInput.value;
+          go(3);
+        });
+
+        // Paso 3 (avanza automáticamente)
+        $$("#times .opt").forEach((b) =>
+          b.addEventListener("click", () => {
+            $$("#times .opt").forEach((x) =>
+              x.setAttribute("aria-pressed", String(x === b)),
+            );
+            state.time = b.dataset.v;
+            setTimeout(() => go(4), 250);
+          }),
+        );
+
+        // Paso 4: envío
+        const loadOv = $("#loadOv");
+        $("#wizard").addEventListener("submit", (e) => {
+          e.preventDefault();
+          const btn = $("#confirmBtn");
+          if (btn.disabled) return;
+          btn.disabled = true;
+          loadOv.classList.add("show");
+
+          const data = {
+            actividad: state.activity,
+            fecha: state.date,
+            fecha_legible: fmtDate(state.date),
+            hora: state.time,
+          };
+          fetch("https://formspree.io/f/xvznvqdl", {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          }).catch((err) =>
+            console.warn("No se pudo enviar a Formspree:", err),
+          );
+
+          setTimeout(() => {
+            loadOv.classList.remove("show");
+            $("#wizard").classList.add("hidden");
+            $("#progress").classList.add("hidden");
+            $(".brand").classList.add("hidden");
+            $("#final").classList.add("show");
+            $("#final h2").setAttribute("tabindex", "-1");
+            $("#final h2").focus();
+            fireworks();
+          }, 4000);
+        });
+
+        // Imagen de respaldo si no existe perrito.jpg
+        $("#dogImg").addEventListener("error", function () {
+          this.style.display = "none";
+          $("#dogFb").style.display = "block";
+        });
+
+        // Fuegos artificiales
+        function fireworks() {
+          if (typeof confetti !== "function") return;
+          if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            confetti({ particleCount: 80, spread: 80, origin: { y: 0.6 } });
+            return;
+          }
+          const end = Date.now() + 6000,
+            cols = ["#e6c27a", "#f2a7c3", "#ffffff", "#b79cff"];
+          const iv = setInterval(() => {
+            if (Date.now() > end) return clearInterval(iv);
+            const o = {
+              startVelocity: 30,
+              spread: 360,
+              ticks: 70,
+              zIndex: 30,
+              colors: cols,
+              particleCount: 50,
+            };
+            confetti({
+              ...o,
+              origin: { x: Math.random() * 0.3 + 0.1, y: Math.random() * 0.4 },
+            });
+            confetti({
+              ...o,
+              origin: { x: Math.random() * 0.3 + 0.6, y: Math.random() * 0.4 },
+            });
+          }, 350);
+        }
+      })();
+    </script>
+  </body>
+</html>
